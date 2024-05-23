@@ -25,8 +25,8 @@ pipeline {
     DEV_DOCKERHUB_IMAGE = 'lsiodev/gimp'
     PR_DOCKERHUB_IMAGE = 'lspipepr/gimp'
     DIST_IMAGE = 'alpine'
-    DIST_TAG = '3.19'
-    DIST_REPO = 'http://dl-cdn.alpinelinux.org/alpine/v3.19/community/'
+    DIST_TAG = '3.20'
+    DIST_REPO = 'http://dl-cdn.alpinelinux.org/alpine/v3.20/community/'
     DIST_REPO_PACKAGES = 'gimp'
     MULTIARCH = 'true'
     CI = 'true'
@@ -529,6 +529,7 @@ pipeline {
           --label \"org.opencontainers.image.title=Gimp\" \
           --label \"org.opencontainers.image.description=[GIMP](https://www.gimp.org/) is a free and open-source raster graphics editor used for image manipulation (retouching) and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks. It is extensible by means of plugins, and scriptable.\" \
           --no-cache --pull -t ${IMAGE}:${META_TAG} --platform=linux/amd64 \
+          --provenance=false --sbom=false \
           --build-arg ${BUILD_VERSION_ARG}=${EXT_RELEASE} --build-arg VERSION=\"${VERSION_TAG}\" --build-arg BUILD_DATE=${GITHUB_DATE} ."
       }
     }
@@ -560,6 +561,7 @@ pipeline {
               --label \"org.opencontainers.image.title=Gimp\" \
               --label \"org.opencontainers.image.description=[GIMP](https://www.gimp.org/) is a free and open-source raster graphics editor used for image manipulation (retouching) and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks. It is extensible by means of plugins, and scriptable.\" \
               --no-cache --pull -t ${IMAGE}:amd64-${META_TAG} --platform=linux/amd64 \
+              --provenance=false --sbom=false \
               --build-arg ${BUILD_VERSION_ARG}=${EXT_RELEASE} --build-arg VERSION=\"${VERSION_TAG}\" --build-arg BUILD_DATE=${GITHUB_DATE} ."
           }
         }
@@ -588,6 +590,7 @@ pipeline {
               --label \"org.opencontainers.image.title=Gimp\" \
               --label \"org.opencontainers.image.description=[GIMP](https://www.gimp.org/) is a free and open-source raster graphics editor used for image manipulation (retouching) and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks. It is extensible by means of plugins, and scriptable.\" \
               --no-cache --pull -f Dockerfile.aarch64 -t ${IMAGE}:arm64v8-${META_TAG} --platform=linux/arm64 \
+              --provenance=false --sbom=false \
               --build-arg ${BUILD_VERSION_ARG}=${EXT_RELEASE} --build-arg VERSION=\"${VERSION_TAG}\" --build-arg BUILD_DATE=${GITHUB_DATE} ."
             sh "docker tag ${IMAGE}:arm64v8-${META_TAG} ghcr.io/linuxserver/lsiodev-buildcache:arm64v8-${COMMIT_SHA}-${BUILD_NUMBER}"
             retry(5) {
