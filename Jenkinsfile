@@ -142,14 +142,12 @@ pipeline {
     /* ########################
        External Release Tagging
        ######################## */
-    // If this is a custom command to determine version use that command
-    stage("Set tag custom bash"){
+    // If this is an os release set release type to none to indicate no external release
+    stage("Set ENV os"){
       steps{
         script{
-          env.EXT_RELEASE = sh(
-            script: ''' curl -sL https://download.gimp.org/gimp/GIMP-Stable-x86_64.AppImage.zsync | awk -F'(GIMP-|-x86_64)' '/URL:/ {print $2}' ''',
-            returnStdout: true).trim()
-            env.RELEASE_LINK = 'custom_command'
+          env.EXT_RELEASE = env.PACKAGE_TAG
+          env.RELEASE_LINK = 'none'
         }
       }
     }
@@ -988,7 +986,7 @@ pipeline {
              "tagger": {"name": "LinuxServer-CI","email": "ci@linuxserver.io","date": "'${GITHUB_DATE}'"}}' '''
         echo "Pushing New release for Tag"
         sh '''#! /bin/bash
-              echo "Updating to ${EXT_RELEASE_CLEAN}" > releasebody.json
+              echo "Updating base packages to ${PACKAGE_TAG}" > releasebody.json
               echo '{"tag_name":"'${META_TAG}'",\
                      "target_commitish": "master",\
                      "name": "'${META_TAG}'",\

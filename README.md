@@ -390,7 +390,7 @@ Once registered you can define the dockerfile to use with `-f Dockerfile.aarch64
 
 ## Versions
 
-* **12.07.25:** - Rebase to Selkies, switch to appimage ingestion and Debian, HTTPS IS NOW REQUIRED.
+* **12.07.25:** - Rebase to Selkies and Debian Trixie, install resynthesizer, HTTPS IS NOW REQUIRED.
 * **06.12.24:** - Rebase to Alpine 3.21.
 * **23.05.24:** - Rebase to Alpine 3.20.
 * **10.02.24:** - Update Readme with new env vars and ingest proper PWA icon.

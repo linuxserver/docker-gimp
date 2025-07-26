@@ -1,9 +1,38 @@
-FROM ghcr.io/linuxserver/baseimage-selkies:debianbookworm
+FROM ghcr.io/linuxserver/baseimage-debian:trixie AS resynth
+
+RUN \
+  echo "**** install build deps ****" && \
+  apt-get update && \
+  apt-get install -y \
+    build-essential \
+    libgimp-3.0-dev \
+    meson
+
+RUN \
+  echo "**** ingest and build resynthesizer ****" && \
+  mkdir /buildout && \
+  RESYNTH_RELEASE=$(curl -sX GET "https://api.github.com/repos/bootchk/resynthesizer/releases/latest" \
+    | awk '/tag_name/{print $4;exit}' FS='[""]') && \
+  curl -o \
+    /tmp/resynth.tar.gz -L \
+    "https://github.com/bootchk/resynthesizer/archive/refs/tags/${RESYNTH_RELEASE}.tar.gz" && \
+  cd /tmp && \
+  tar -xf resynth.tar.gz && \
+  cd resynthesizer-* && \
+  meson setup resynthesizerBuild && \
+  cd resynthesizerBuild && \
+  meson compile --verbose -j $(nproc) && \
+  DESTDIR=/buildout meson install && \
+  mv /buildout/usr/local/lib /buildout/usr && \
+  rm -Rf /buildout/usr/local
+
+# runtime stage
+FROM ghcr.io/linuxserver/baseimage-selkies:debiantrixie
 
 # set version label
 ARG BUILD_DATE
 ARG VERSION
-ARG KRITA_VERSION
+ARG GIMP_VERSION
 LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="thelamer"
 
@@ -16,26 +45,19 @@ RUN \
     /usr/share/selkies/www/icon.png \
     https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/gimp-logo.png && \
   echo "**** install packages ****" && \
-  DOWNLOAD_PATH=$(curl -sL https://download.gimp.org/gimp/GIMP-Stable-x86_64.AppImage.zsync \
-    | awk '/URL:/ {print $2}') && \
-  DOWNLOAD_PATH=$(echo $DOWNLOAD_PATH | sed 's/v3.1/v3.0/g') && \
-  curl -o \
-    /tmp/gimp.app -L \
-    "https://download.gimp.org/gimp/${DOWNLOAD_PATH}" && \
-  cd /tmp && \
-  chmod +x gimp.app && \
-  ./gimp.app --appimage-extract && \
-  mv \
-    squashfs-root \
-    /opt/gimp && \
-  ln -s \
-    /opt/gimp/AppRun \
-    /usr/bin/gimp && \
+  apt-get update && \
+  apt-get install -y \
+    gimp \
+    libgimp-3.0 && \
   echo "**** cleanup ****" && \
+  apt-get autoclean && \
   rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/* \
     /tmp/*
 
 # add local files
+COPY --from=resynth /buildout /
 COPY /root /
 
 # ports and volumes

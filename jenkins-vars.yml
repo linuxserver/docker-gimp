@@ -2,8 +2,7 @@
 
 # jenkins variables
 project_name: docker-gimp
-external_type: na
-custom_version_command: "curl -sL https://download.gimp.org/gimp/GIMP-Stable-x86_64.AppImage.zsync | awk -F'(GIMP-|-x86_64)' '/URL:/ {print $2}'"
+external_type: os
 release_type: stable
 release_tag: latest
 ls_branch: master
