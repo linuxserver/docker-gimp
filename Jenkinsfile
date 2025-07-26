@@ -26,15 +26,12 @@ pipeline {
     DOCKERHUB_IMAGE = 'linuxserver/gimp'
     DEV_DOCKERHUB_IMAGE = 'lsiodev/gimp'
     PR_DOCKERHUB_IMAGE = 'lspipepr/gimp'
-    DIST_IMAGE = 'alpine'
-    DIST_TAG = '3.21'
-    DIST_REPO = 'http://dl-cdn.alpinelinux.org/alpine/v3.21/community/'
-    DIST_REPO_PACKAGES = 'gimp'
+    DIST_IMAGE = 'ubuntu'
     MULTIARCH = 'true'
     CI = 'true'
     CI_WEB = 'true'
-    CI_PORT = '3000'
-    CI_SSL = 'false'
+    CI_PORT = '3001'
+    CI_SSL = 'true'
     CI_DELAY = '120'
     CI_DOCKERENV = 'TZ=US/Pacific'
     CI_AUTH = 'user:password'
@@ -145,15 +142,14 @@ pipeline {
     /* ########################
        External Release Tagging
        ######################## */
-    // If this is an alpine repo change for external version determine an md5 from the version string
-    stage("Set tag Alpine Repo"){
+    // If this is a custom command to determine version use that command
+    stage("Set tag custom bash"){
       steps{
         script{
           env.EXT_RELEASE = sh(
-            script: '''curl -sL "${DIST_REPO}x86_64/APKINDEX.tar.gz" | tar -xz -C /tmp \
-                       && awk '/^P:'"${DIST_REPO_PACKAGES}"'$/,/V:/' /tmp/APKINDEX | sed -n 2p | sed 's/^V://' ''',
+            script: ''' curl -sL https://download.gimp.org/gimp/GIMP-Stable-x86_64.AppImage.zsync | awk -F'(GIMP-|-x86_64)' '/URL:/ {print $2}' ''',
             returnStdout: true).trim()
-            env.RELEASE_LINK = 'alpine_repo'
+            env.RELEASE_LINK = 'custom_command'
         }
       }
     }
@@ -992,7 +988,7 @@ pipeline {
              "tagger": {"name": "LinuxServer-CI","email": "ci@linuxserver.io","date": "'${GITHUB_DATE}'"}}' '''
         echo "Pushing New release for Tag"
         sh '''#! /bin/bash
-              echo "Updating external repo packages to ${EXT_RELEASE_CLEAN}" > releasebody.json
+              echo "Updating to ${EXT_RELEASE_CLEAN}" > releasebody.json
               echo '{"tag_name":"'${META_TAG}'",\
                      "target_commitish": "master",\
                      "name": "'${META_TAG}'",\

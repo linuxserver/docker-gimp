@@ -1,9 +1,9 @@
-FROM ghcr.io/linuxserver/baseimage-kasmvnc:alpine321
+FROM ghcr.io/linuxserver/baseimage-selkies:debianbookworm
 
 # set version label
 ARG BUILD_DATE
 ARG VERSION
-ARG GIMP_VERSION
+ARG KRITA_VERSION
 LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="thelamer"
 
@@ -13,15 +13,24 @@ ENV TITLE=GIMP
 RUN \
   echo "**** add icon ****" && \
   curl -o \
-    /kclient/public/icon.png \
+    /usr/share/selkies/www/icon.png \
     https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/gimp-logo.png && \
   echo "**** install packages ****" && \
-  if [ -z ${GIMP_VERSION+x} ]; then \
-    GIMP_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz" | tar -xz -C /tmp \
-    && awk '/^P:gimp$/,/V:/' /tmp/APKINDEX | sed -n 2p | sed 's/^V://'); \
-  fi && \
-  apk add --no-cache \
-    gimp==${GIMP_VERSION} && \
+  DOWNLOAD_PATH=$(curl -sL https://download.gimp.org/gimp/GIMP-Stable-x86_64.AppImage.zsync \
+    | awk '/URL:/ {print $2}') && \
+  DOWNLOAD_PATH=$(echo $DOWNLOAD_PATH | sed 's/v3.1/v3.0/g') && \
+  curl -o \
+    /tmp/gimp.app -L \
+    "https://download.gimp.org/gimp/${DOWNLOAD_PATH}" && \
+  cd /tmp && \
+  chmod +x gimp.app && \
+  ./gimp.app --appimage-extract && \
+  mv \
+    squashfs-root \
+    /opt/gimp && \
+  ln -s \
+    /opt/gimp/AppRun \
+    /usr/bin/gimp && \
   echo "**** cleanup ****" && \
   rm -rf \
     /tmp/*
