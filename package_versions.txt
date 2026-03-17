@@ -709,10 +709,10 @@ libcairo-script-interpreter2                                                  1.
 libcairo2                                                                     1.18.4-1+b1                            deb                         
 libcairo2-dev                                                                 1.18.4-1+b1                            deb                         
 libcamd3                                                                      1:7.10.1+dfsg-1                        deb                         
-libcap-dev                                                                    1:2.75-10+b3                           deb                         
+libcap-dev                                                                    1:2.75-10+b8                           deb                         
 libcap-ng0                                                                    0.8.5-4+b1                             deb                         
-libcap2                                                                       1:2.75-10+b3                           deb                         
-libcap2-bin                                                                   1:2.75-10+b3                           deb                         
+libcap2                                                                       1:2.75-10+b8                           deb                         
+libcap2-bin                                                                   1:2.75-10+b8                           deb                         
 libcbor0.10                                                                   0.10.2-2                               deb                         
 libcc1-0                                                                      14.2.0-19                              deb                         
 libccolamd3                                                                   1:7.10.1+dfsg-1                        deb                         
