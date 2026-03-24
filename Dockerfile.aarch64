@@ -38,9 +38,9 @@ ARG GIMP_VERSION
 LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="thelamer"
 
-# title
 ENV TITLE=GIMP \
-    NO_FULL=true
+    PIXELFLUX_WAYLAND=true \
+    NO_GAMEPAD=true
 
 RUN \
   echo "**** add icon ****" && \
