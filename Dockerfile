@@ -21,7 +21,7 @@ RUN \
   cd /tmp && \
   tar -xf resynth.tar.gz && \
   cd resynthesizer-* && \
-  meson setup resynthesizerBuild && \
+  meson setup resynthesizerBuild -Dinstall-translations=false && \
   cd resynthesizerBuild && \
   meson compile --verbose -j $(nproc) && \
   DESTDIR=/buildout meson install && \
