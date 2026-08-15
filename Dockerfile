@@ -14,7 +14,7 @@ RUN \
   echo "**** ingest and build resynthesizer ****" && \
   mkdir /buildout && \
   RESYNTH_RELEASE=$(curl -sX GET "https://api.github.com/repos/bootchk/resynthesizer/releases/latest" \
-    | awk '/tag_name/{print $4;exit}' FS='[""]') && \
+    | jq -r '.tag_name') && \
   curl -o \
     /tmp/resynth.tar.gz -L \
     "https://github.com/bootchk/resynthesizer/archive/refs/tags/${RESYNTH_RELEASE}.tar.gz" && \
