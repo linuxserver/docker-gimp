@@ -731,8 +731,8 @@ libevent-2.1-7t64                                                             2.
 libexiv2-28                                                                   0.28.5+dfsg-1                           deb                         
 libexiv2-data                                                                 0.28.5+dfsg-1                           deb                         
 libexiv2-dev                                                                  0.28.5+dfsg-1                           deb                         
-libexpat1                                                                     2.8.2-1~deb13u1                         deb                         
-libexpat1-dev                                                                 2.8.2-1~deb13u1                         deb                         
+libexpat1                                                                     2.8.3-1~deb13u1                         deb                         
+libexpat1-dev                                                                 2.8.3-1~deb13u1                         deb                         
 libfcft4t64                                                                   3.3.1-1                                 deb                         
 libffi-dev                                                                    3.4.8-2                                 deb                         
 libffi8                                                                       3.4.8-2                                 deb                         
